@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "alternating-hand-words"
+version = "0.1.0"
+description = ""
+authors = ["Jeff McCarrell <jeff@mccarrell.org>"]
+readme = "README.md"
+packages = [{include = "alternating_hand_words", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
