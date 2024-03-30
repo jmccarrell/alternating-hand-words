@@ -8,7 +8,13 @@ packages = [{include = "alternating_hand_words", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+typer = "^0.12.0"
+loguru = "^0.7.2"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+mypy = "^1.9.0"
 
 [build-system]
 requires = ["poetry-core"]
