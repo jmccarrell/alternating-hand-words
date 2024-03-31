@@ -1,9 +1,7 @@
 import typer  # type: ignore
-from typing import Iterable
 from typing_extensions import Annotated
 from pathlib import Path
 import importlib.metadata
-
 from loguru import logger
 
 app = typer.Typer()
@@ -17,12 +15,8 @@ def left_hand_char_p(chars: str) -> bool:
 
     B is considered to be a left hand character.
     """
-    qwerty_lh_chars = tuple(
-        "qwert"
-        "asdfg"
-        "zxcvb"
-    )
-    return all(map(lambda c: c in qwerty_lh_chars, chars))
+    qwerty_lh_chars = tuple("qwert" "asdfg" "zxcvb")
+    return all((c.lower() in qwerty_lh_chars for c in chars))
 
 
 def right_hand_char_p(chars: str) -> bool:
@@ -31,17 +25,13 @@ def right_hand_char_p(chars: str) -> bool:
 
     B is somewhat arbitrarily not true here.
     """
-    qwerty_rh_chars = tuple(
-        "yuiop"
-        "hjkl"
-        "nm"
-    )
-    return all(map(lambda c: c in qwerty_rh_chars, chars))
+    qwerty_rh_chars = tuple("yuiop" "hjkl" "nm")
+    return all((c.lower() in qwerty_rh_chars for c in chars))
 
 
 def alternating_hand_word_p(word: str) -> bool:
     """
-    Return True iff each seqeuntial character in word 
+    Return True iff each sequential character in word
     would be typed by the alternate hand on a qwerty
     keyboard.
 
@@ -59,9 +49,9 @@ def alternating_hand_word_p(word: str) -> bool:
         # pick the function for the next test
         f = left_hand_char_p if is_right_hand else right_hand_char_p
         t = f(c)
-        logger.debug(f"{c_index}: {c}: {t}: {word[1:1 + c_index + 1]}")
+        # logger.debug(f"{c_index}: {c}: {t}: {word[1:1 + c_index + 1]}")
         if not t:
-            logger.debug(f"{word} failed at pos: {c_index}: {word[:c_index + 2]}")
+            # logger.debug(f"{word} failed at pos: {c_index + 1}: {word[:c_index + 2]}")
             return False
         is_right_hand = not is_right_hand
 
@@ -70,7 +60,7 @@ def alternating_hand_word_p(word: str) -> bool:
 
 @app.command()
 def search(
-        word_dict: Annotated[
+    word_dict: Annotated[
         Path,
         typer.Option(
             exists=True,
@@ -80,19 +70,21 @@ def search(
             readable=True,
             resolve_path=True,
         ),
-    ] = Path("/usr/share/dict/words")
+    ] = Path("/usr/share/dict/words"),
 ) -> None:
     """
     Search WORD_DICT for alternating right and left hand words.
     Return an Iterable of matching words.
     """
-    breakpoint()
-    for w in word_dict.read_text().strip():
-        logger.debug(w)
-        if alternating_hand_word_p(w):
-            logger.debug(w)
-            print(w)
-    yield "found"
+    with word_dict.open() as wd:
+        for w in map(lambda s: s.strip(), wd.readlines()):
+            if len(w) <= 3:
+                continue
+            # ignore proper names
+            if w[0].isupper():
+                continue
+            if alternating_hand_word_p(w):
+                print(f"{w}")
 
 
 @app.command()
@@ -107,8 +99,9 @@ def version() -> None:
 
 
 def main():
-    exit_code:int = app()
+    exit_code: int = app()
     return exit_code
 
-if __name__  == "__main__":
+
+if __name__ == "__main__":
     main()

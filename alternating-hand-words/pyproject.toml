@@ -16,6 +16,9 @@ loguru = "^0.7.2"
 pytest = "^8.1.1"
 mypy = "^1.9.0"
 
+[tool.ruff]
+line-length = 108
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
