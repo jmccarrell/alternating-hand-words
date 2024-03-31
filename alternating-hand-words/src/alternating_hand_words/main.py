@@ -10,7 +10,7 @@ app = typer.Typer()
 def left_hand_char_p(chars: str) -> bool:
     """
     Predicate for the characters of the qwerty keyboard
-    indicating if all of the characters of chars
+    indicating if all of the characters in chars
     are typically typed by the left hand.
 
     B is considered to be a left hand character.
@@ -46,11 +46,10 @@ def alternating_hand_word_p(word: str) -> bool:
     if not is_right_hand:
         assert left_hand_char_p(word[:1])
     for c_index, c in enumerate(word[1:]):
-        # pick the function for the next test
+        # choose the function for the next test
         f = left_hand_char_p if is_right_hand else right_hand_char_p
-        t = f(c)
         # logger.debug(f"{c_index}: {c}: {t}: {word[1:1 + c_index + 1]}")
-        if not t:
+        if not f(c):
             # logger.debug(f"{word} failed at pos: {c_index + 1}: {word[:c_index + 2]}")
             return False
         is_right_hand = not is_right_hand
