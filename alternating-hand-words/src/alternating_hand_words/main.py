@@ -71,6 +71,9 @@ def search(
             resolve_path=True,
         ),
     ] = Path("/usr/share/dict/words"),
+    minimum_length: int = 3,
+    maximum_length: int = 128,
+    ignore_proper_names: bool = True,
 ) -> None:
     """
     Search WORD_DICT for alternating right and left hand words.
@@ -78,10 +81,12 @@ def search(
     """
     with word_dict.open() as wd:
         for w in map(lambda s: s.strip(), wd.readlines()):
-            if len(w) <= 3:
+            if len(w) < minimum_length:
+                continue
+            if len(w) > maximum_length:
                 continue
             # ignore proper names
-            if w[0].isupper():
+            if ignore_proper_names and w[0].isupper():
                 continue
             if alternating_hand_word_p(w):
                 print(f"{w}")
